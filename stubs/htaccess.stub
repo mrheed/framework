@@ -1,0 +1,28 @@
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+
+    <IfModule mod_negotiation.c>
+        Options -MultiViews
+    </IfModule>
+
+    RewriteEngine On
+
+    DirectoryIndex index.php
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+    # Handle Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+
+</IfModule>
+
+<FilesMatch "\.(htaccess|htpasswd|ini|log|env|sh|bak|gitignore|json|sql|sqlite|stub)$">
+    
+    Deny from all
+
+</FilesMatch>

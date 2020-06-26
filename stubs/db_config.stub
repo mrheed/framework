@@ -1,0 +1,23 @@
+<?php
+
+return [
+	'default' => env('default_db', 'db_01'),
+	'connections' =>[
+
+		'db_01' => [
+			'driver' => 'postgre',
+			'host' => env('db_host', 'localhost'),
+			'name' => env('db_name', ''),
+			'user' => env('db_user', 'postgres'),
+			'pass' => env('db_pass', 'postgres')
+		],
+		
+		'db_02' => [
+			'driver' => 'mysql',
+			'host' =>  env('db_host', 'localhost'),
+			'name' =>  env('db_name', ''),
+			'user' =>  env('db_user', 'root'),
+			'pass' =>  env('db_pass', '')
+		]
+	]
+];

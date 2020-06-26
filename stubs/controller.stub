@@ -1,0 +1,11 @@
+<?php
+
+namespace {namespace};
+
+class {controller_name}Controller{
+
+	public function {http_method}{action_name}(){
+
+		die("hello world!");
+	}
+}
