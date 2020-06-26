@@ -1,6 +1,6 @@
 <?php
 
-namespace Ez\Driver;
+namespace Ez\Drivers;
 
 use Ez\Contracts\Database;
 

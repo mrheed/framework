@@ -2,9 +2,9 @@
 
 namespace {namespace};
 
-class {controller_name}Controller{
+class {class_name}{
 
-	public function {http_method}{action_name}(){
+	public function {method_name}(){
 
 		die("hello world!");
 	}

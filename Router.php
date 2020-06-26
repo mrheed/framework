@@ -112,11 +112,44 @@ class Router{
 
 		if ('/' == $url) $url = $default_url;
 
-		// dd(config('app.indexurl'));
-		
-		// dd($url == config('app.indexurl'));
+		extract($this->extractUrl($url));
 
-		extract( $this->extractUrl($url) );
+
+		// cek default index url
+		if (config('app.indexurl') == $url){
+
+
+			$controller = base_dir(ltrim(str_replace('\\', '/', $class), '/') . '.php');
+
+			// cek default controoler
+			if (!file_exists($controller)) {
+				
+				// generate default controoler
+
+				$namespace = explode('\\', $class);
+				
+				// get class name of controller
+				$class_name = array_pop($namespace);
+
+				// get namespace
+				$namespace = ltrim(implode('\\', $namespace), '\\');
+
+				$controller_stub = stub(__DIR__ . '/stubs/controller.stub', [
+					'namespace' => $namespace,
+					'class_name' => $class_name,
+					'method_name' => $method
+				]);
+
+
+				$arr_controller_path = explode('/', $controller);
+				array_pop($arr_controller_path);
+				$controller_path = implode('/', $arr_controller_path);
+
+				mkdir($controller_path, 0777, true);
+
+				file_put_contents($controller, $controller_stub);
+			}
+		}
 
 		$result = $this->call($class, $method);
 	

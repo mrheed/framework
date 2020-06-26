@@ -30,7 +30,7 @@ class Database
             );
         }
 
-        $driver = '\\Ez\\Driver\\' . ucfirst(strtolower($db['driver']));
+        $driver = '\\Ez\\Drivers\\' . ucfirst(strtolower($db['driver']));
         
         static::$driver = new $driver;
 

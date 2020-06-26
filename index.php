@@ -1,12 +1,12 @@
 <?php
 
-$helpers = scandir(__DIR__ . '/helper');
+$helpers = scandir(__DIR__ . '/helpers');
 
 foreach ($helpers as $file) {
 	
 	if ('.' != $file and '..' != $file) {
 
-		require __DIR__ . "/helper/$file";
+		require __DIR__ . "/helpers/$file";
 	}
 }
 
@@ -28,21 +28,15 @@ if (!file_exists(base_dir('.htaccess'))) {
 
 if (!file_exists(base_dir('index.php'))) {
 
-	$arr_path = explode('/', __DIR__);
-	$this_folder_name = end($arr_path);
-
 	file_put_contents(base_dir('index.php'),
-		stub(__DIR__ . '/stubs/index.stub', compact('this_folder_name')));
+		stub(__DIR__ . '/stubs/index.stub'));
 }
 
 
 if (!file_exists(base_dir('.gitignore'))) {
 
-	$arr_path = explode('/', __DIR__);
-	$this_folder_name = end($arr_path);
-
 	file_put_contents(base_dir('.gitignore'),
-		stub(__DIR__ . '/stubs/gitignore.stub',  compact('this_folder_name')));
+		stub(__DIR__ . '/stubs/gitignore.stub'));
 }
 
 Ez\Env::file(__DIR__ . '/../.env');
