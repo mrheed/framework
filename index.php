@@ -32,7 +32,6 @@ if (!file_exists(base_dir('index.php'))) {
 		stub(__DIR__ . '/stubs/index.stub'));
 }
 
-
 if (!file_exists(base_dir('.gitignore'))) {
 
 	file_put_contents(base_dir('.gitignore'),
@@ -46,4 +45,8 @@ Ez\ErrorHandler::register();
 
 date_default_timezone_set(config('app.timezone'));
 
-(new Ez\Router)->start(config('app.indexurl'));
+$url = Ez\Request::url();
+
+if ('/' == $url) $url = config('app.indexurl');
+
+(new Ez\Router)->handle($url);

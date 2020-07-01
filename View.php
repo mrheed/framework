@@ -2,132 +2,64 @@
 
 namespace Ez;
 
-/**
- * View sebagai render view untuk load template
- * @author prade.nugroho@gin.co.id
- */
-class View
-{
+class View {
 
-    private static
-        $path = 'view',
-        $layout = 'layout',
-        $content = false,
-        $css = [],
-        $js = [],
-        $render_variable = [];
+	private static $path = null;
+	private static $name = null;
+	private static $data = [];
 
-    public static function layout($file)
-    {
+	public function path($path){
 
-        static::$render_variable['layout'] = $file;
-    }
+		if (!is_null($path)) {
 
-    public static function share($data = [])
-    {
+			static::$path = $path;
+		}
 
-        static::$render_variable = array_merge(static::$render_variable, $data);
-    }
+		return $this;
+	}
 
+	public function name($name = null){
 
-    public static function registerCss($css)
-    {
-        if (is_array($css)){
-            foreach ($css as $item_css){
-                
-                array_push(static::$css, $item_css);
-            }
+		if (!is_null($name)) {
 
-        } else {
+			static::$name = $name;
+		}
 
-            array_push(static::$css, $css);
-        }
-    }
+		return $this;
+	}
 
-    public static function registerJs($js)
-    {
-        if (is_array($js)){
-            foreach ($js as $item_js){
-                
-                array_push(static::$js, $item_js);
-            }
+	public function data($key = null, $val = null){
+		
+		if (is_array($key)) {
 
-        } else {
+			foreach ($key as $sub_key => $sub_val){
 
-            array_push(static::$js, $js);
-        }
-    }
+				static::$data[$sub_key] = $sub_val;
+			}
 
-    public static function path($path)
-    {
+		} elseif(!is_null($val)) {
 
-        static::$path = $path;
-    }
+			static::$data[$key] = $val;
+		}
 
-    /**
-     * view() digunakan untuk load seluruh template yang dipilih
-     * @param string $file file yang akan diload
-     * @param object $data data yang akan dikirimkan ke dalam view
-     */
-    public static function render($file, $data = [])
-    {
+		return $this;
+	}
 
-        $layout = static::$layout;
-        
-        static::$render_variable = array_merge(static::$render_variable, $data);
+	public function getData(){
 
-        extract(static::$render_variable);
+		return new Collection(static::$data);
+	}
 
-        if (false == $layout) {
+	public function render(){
 
-            unset($layout);
-        }
+		$file = static::$path . '/' . static::$name . '.php';
 
-        if (isset($layout)) {
+		dd(fileatime($file));
+		exit();
 
-
-            static::$content = base_dir('view/' . rdot($file).'.php');
-
-            include base_dir(rdot(static::$path . '.' . $layout).'.php');
-
-        } else {
-
-            include base_dir(rdot(static::$path . '.' . $file) . '.php');
-        }
-    }
-
-    // nggo nampilken content sek nganggo layout
-    public static function content()
-    {
-        extract(static::$render_variable);
-
-        include static::$content;
-    }
-
-    // podo ro js()
-    public static function css()
-    {
-
-        $files = array_unique(static::$css);
-
-        foreach ($files as $css){
-
-            $css = url($css);
-
-            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$css\">";
-        }
-    }
-    // nggo load js sek ke include barengan karo content
-    public static function js()
-    {
-
-        $files = array_unique(static::$js);
-
-        foreach ($files as $js){
-
-            $js = url($js);
-
-            echo "<script type=\"text/javascript\" src=\"$js\"></script>";
-        }
-    }
+		return new Collection([
+			'data' => static::$data,
+			'file' => $file
+		]);
+	}
 }

@@ -5,7 +5,7 @@ namespace Ez;
 use ReflectionMethod;
 use Exception;
 
-class Router{
+class Router {
 
 	private function getDependency($object, $method){
 		$reflection = new ReflectionMethod($object, $method);
@@ -18,8 +18,8 @@ class Router{
 			
 			if (method_exists($parameter, 'hasType') and $parameter->hasType()){
 				
-					
-				$dependency = '\\' . $parameter->getType()->__toString();
+				$dependency = '\\' . $parameter->getType()->getName();
+				// $dependency = '\\' . $parameter->getType()->__toString();
 
 				if (class_exists($dependency)){
 					
@@ -42,19 +42,101 @@ class Router{
 		return $dependencys;
 	}
 
-	private function call($class, $method){
+	private function prepare($url){
+
+		$arr_url = explode('/',  ltrim($url, '/') );
+
+		$is_api = false;
+
+		if ('api' == $arr_url[0]){
+
+			$is_api = true;
+			$arr_url = array_except(0, $arr_url);
+		}
+
+		$page_name = array_pop($arr_url);
+		
+		$http_method = strtolower(Request::method());
+		
+		if (Request::isAjax()) $http_method =  'ajax_'. $http_method;
+
+		$method = camel_case($http_method . '_' . $page_name);
+
+		$class_name = studly_case(
+			empty($arr_url) ? $page_name : array_pop($arr_url)
+		) . 'Controller';
+
+		$namespace = '\\' . implode('\\',
+			array_map(function($val){
+
+				return  studly_case(ucfirst(strtolower($val)));
+			
+			}, $arr_url)
+		);
+
+		$path = base_dir(ltrim(str_replace('\\', '/', $namespace), '/'));
+
+		// pertamakali running dibuatkan contoh dulu
+		if (config('app.indexurl') == $url){
+			
+			$file = "$path/$class_name.php";
+
+			if (!file_exists($file)) {
+
+				mkdir($path, 0777, true);
+
+				file_put_contents($file, stub(
+					__DIR__ . '/stubs/controller.stub', [
+						'namespace' => $namespace,
+						'class_name' => $class_name,
+						'method_name' => $method
+					]
+				));
+
+				mkdir("$path/view", 0777, true);
+				file_put_contents("$path/view/$page_name.html",
+					stub(__DIR__ . '/stubs/view.stub'));
+				
+				mkdir("$path/css", 0777, true);
+				file_put_contents("$path/css/$page_name.css",
+					stub(__DIR__ . '/stubs/css.stub'));
+				
+				mkdir("$path/js", 0777, true);
+				file_put_contents("$path/js/$page_name.js",
+					stub(__DIR__ . '/stubs/js.stub'));
+			}
+		}
+
+		$class = "$namespace\\$class_name";
+
 		if (class_exists($class)){
-	
+
 			$controller = new $class;
 
 			if(method_exists($controller, $method)){
+				
+				$args = $this->getdependency($controller, $method);
+				
+				$result = call_user_func_array([$controller, $method], $args);
 
-				
-				$arguments = $this->getdependency($controller, $method);
-				
-				return call_user_func_array([$controller, $method], $arguments);
+				if ($result instanceof View) {
+
+					if ($is_api) {
+						
+						$result = $result->getData()->toArray();
+
+					} else {
+
+						$result = $result->path("$path/view")->render();
+					}
+				}
+
+				return $result;
+			
+			} elseif(!$is_api and file_exists("$path/view/$page_name.php")){
+
+				return (new View)->path("$path/view")->name($page_name);
 			}
-
 
 			abort(404, "Controller $class tidak memiliki method $method.");
 		}
@@ -62,103 +144,16 @@ class Router{
 		abort(404, "Controller $class tidak ditemukan.");
 	}
 
-	private function extractUrl($url){
+	public function handle($url){
 
-		$namespace = explode('/',  ltrim($url, '/') );
-		
-		$arr_pisah_method = array_splice($namespace, (count($namespace) - 1));
-		$str_ambil_method =
-			strtolower(Request::method()).'_'.$arr_pisah_method[0];
-		
-		if (Request::isAjax()){
+		$result = $this->prepare($url);
 
-			$str_ambil_method =  'ajax_'. $str_ambil_method;
-		}
-		
-		$method = camel_case($str_ambil_method);
-
-		$arr_pisah_class = array_splice($namespace, (count($namespace) - 1));
-		
-		if (isset($arr_pisah_class[0])){
-
-			$class = studly_case($arr_pisah_class[0]);
-		
-		} else {
-
-			$class = studly_case($arr_pisah_method[0]);
-		}
-
-		if (empty($namespace)){
-			
-			$class =  '\\' . $class . 'Controller';
-
-		} else {
-
-			$namespace = array_map(function($val){
-
-				return  studly_case(ucfirst(strtolower($val)));
-				
-			}, $namespace);
-
-			$class = '\\' . implode('\\', $namespace) . "\\" . $class  . 'Controller';
-		}
-
-		return compact('class', 'method');
-	}
-
-	public function start($default_url){
-		
-		$url = Request::url();
-
-		if ('/' == $url) $url = $default_url;
-
-		extract($this->extractUrl($url));
-
-
-		// cek default index url
-		if (config('app.indexurl') == $url){
-
-
-			$controller = base_dir(ltrim(str_replace('\\', '/', $class), '/') . '.php');
-
-			// cek default controoler
-			if (!file_exists($controller)) {
-				
-				// generate default controoler
-
-				$namespace = explode('\\', $class);
-				
-				// get class name of controller
-				$class_name = array_pop($namespace);
-
-				// get namespace
-				$namespace = ltrim(implode('\\', $namespace), '\\');
-
-				$controller_stub = stub(__DIR__ . '/stubs/controller.stub', [
-					'namespace' => $namespace,
-					'class_name' => $class_name,
-					'method_name' => $method
-				]);
-
-
-				$arr_controller_path = explode('/', $controller);
-				array_pop($arr_controller_path);
-				$controller_path = implode('/', $arr_controller_path);
-
-				mkdir($controller_path, 0777, true);
-
-				file_put_contents($controller, $controller_stub);
-			}
-		}
-
-		$result = $this->call($class, $method);
-	
 		if (is_array($result)){
 
 			header('content-type:application/json');
-			die(json_encode($result));
+			$result = json_encode($result);
 		}
 
-		return $result;
+		echo $result;
 	}
 }

@@ -1,9 +1,56 @@
 <?php
 
-use Ez\ErrorHandler;
-use Ez\Router;
 use Ez\Request;
 use Ez\Validation;
+use Ez\Session;
+use Ez\Database;
+
+function env($key, $default = null){
+
+	return Ez\Env::get($key, $default);
+}
+
+function config($config_name = null){
+
+	return Ez\Config::get($config_name);
+}
+
+function session($session_name = false, $val = false){
+
+	if (false == $session_name){
+
+
+		return Session::get();
+
+	} else if (false == $val){
+
+		return Session::get($session_name);
+
+	} else {
+
+		Session::set($session_name, $val);
+	}
+}
+
+function db($connect = null){
+
+	if (!is_null($connect)) {
+
+		Database::connect($connect);
+	}
+
+	return new Database;
+}
+
+function table($table){
+
+	return (new Database)->table($table);
+}
+
+function destroy_session(){
+
+	Session::destroy();
+}
 
 function abort($code = 500, $message = 'Error Processing Request'){
 
@@ -11,7 +58,9 @@ function abort($code = 500, $message = 'Error Processing Request'){
 	exit;	
 }
 
-function dd($foo){
+function dd(){
+
+	$args = func_get_args();
 
 	echo "
 			<!DOCTYPE HTML>
@@ -21,15 +70,19 @@ function dd($foo){
 				</head>
 				<body style='background-color: #3a3a3a;color: #bdbdbd;'>";
 
-	var_dump($foo);
+	foreach ($args as $arg){
+		echo "		<pre>";
+		var_dump($arg);
+		echo "		</pre>";
+	}
 
-	echo		"</body>
+	echo "
+				</body>
 			</html>
 		";
 
 	exit;
 }
-
 
 function url($append = null){
 
@@ -115,4 +168,36 @@ function stub($file, $data = []){
 	}
 
 	return $stub;
+}
+
+function view($name, $data = []){
+
+	return (new Ez\View)->name($name)->data($data);
+}
+
+function request(){
+
+	return New Request;
+}
+
+function post($name = null){
+
+	return Request::data($name);
+}
+
+function get($name = null){
+
+	return Request::query($name);
+}
+
+function post_rules($rules){
+
+	$data = post()->toArray();
+	return (new Validation)->rules($rules)->data($data)->validate();
+}
+
+function get_rules($rules){
+
+	$data = get()->toArray();
+	return (new Validation)->rules($rules)->data($data)->validate();
 }

@@ -2,10 +2,7 @@
 
 namespace Ez;
 
-use Ez\Database as DB;
-
-class Validation
-{
+class Validation {
 
     private static $rules = [];
     private static $data = [];
@@ -376,7 +373,7 @@ class Validation
 
             foreach (static::$data[$field] as $key => $data) {
                 
-                $check = (new DB)
+                $check = (new Database)
                     ->table($table)
                     ->select($column)
                     ->where($column, $data)
@@ -393,7 +390,7 @@ class Validation
 
         } else {
             
-            $check = (new DB)
+            $check = (new Database)
                 ->table($table)
                 ->select($column)
                 ->where($column, static::$data[$field])

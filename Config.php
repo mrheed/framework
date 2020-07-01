@@ -2,8 +2,8 @@
 
 namespace Ez;
 
-class Config
-{
+class Config {
+
     public static $config = [];
 
 	public static function load($dir)
