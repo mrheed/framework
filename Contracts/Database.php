@@ -1,6 +1,6 @@
 <?php
 
-namespace Ez\Contracts;
+namespace Gi_BaseFramework\Contracts;
 
 interface Database
 {

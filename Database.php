@@ -1,12 +1,11 @@
 <?php
 
-namespace Ez;
+namespace Gi_BaseFramework;
 
 use Exception;
-use Ez\Traits\QueryBuilder;
+use Gi_BaseFramework\Traits\QueryBuilder;
 
-class Database
-{
+class Database {
 
     use QueryBuilder;
 
@@ -30,7 +29,7 @@ class Database
             );
         }
 
-        $driver = '\\Ez\\Drivers\\' . ucfirst(strtolower($db['driver']));
+        $driver = '\\Gi_BaseFramework\\Drivers\\' . ucfirst(strtolower($db['driver']));
         
         static::$driver = new $driver;
 

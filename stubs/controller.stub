@@ -6,6 +6,8 @@ class {class_name}{
 
 	public function {method_name}(){
 
-		die("hello world!");
+		return view('index', [
+			'message' => 'hey!'
+		]);
 	}
 }

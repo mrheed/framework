@@ -1,6 +1,6 @@
 <?php
 
-namespace Ez;
+namespace Gi_BaseFramework;
 
 use ReflectionMethod;
 use Exception;
@@ -58,7 +58,11 @@ class Router {
 		
 		$http_method = strtolower(Request::method());
 		
-		if (Request::isAjax()) $http_method =  'ajax_'. $http_method;
+		if (Request::isAjax()) {
+
+			$is_api = true;
+			$http_method =  'ajax_'. $http_method;
+		}
 
 		$method = camel_case($http_method . '_' . $page_name);
 
@@ -87,15 +91,17 @@ class Router {
 
 				file_put_contents($file, stub(
 					__DIR__ . '/stubs/controller.stub', [
-						'namespace' => $namespace,
+						'namespace' => ltrim($namespace, '\\'),
 						'class_name' => $class_name,
 						'method_name' => $method
 					]
 				));
 
 				mkdir("$path/view", 0777, true);
-				file_put_contents("$path/view/$page_name.html",
+				file_put_contents("$path/view/$page_name.php",
 					stub(__DIR__ . '/stubs/view.stub'));
+				file_put_contents("$path/view/layout.php",
+					stub(__DIR__ . '/stubs/view_layout.stub'));
 				
 				mkdir("$path/css", 0777, true);
 				file_put_contents("$path/css/$page_name.css",
@@ -127,7 +133,7 @@ class Router {
 
 					} else {
 
-						$result = $result->path("$path/view")->render();
+						$result = $result->path("$path/view");
 					}
 				}
 
@@ -147,13 +153,17 @@ class Router {
 	public function handle($url){
 
 		$result = $this->prepare($url);
+		
+		if ($result instanceof View) {
 
-		if (is_array($result)){
+			$result->render();
+
+		} elseif (is_array($result)){
 
 			header('content-type:application/json');
-			$result = json_encode($result);
+			echo json_encode($result);
 		}
 
-		echo $result;
+		exit;
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ez;
+namespace Gi_BaseFramework;
 
 class Validation {
 

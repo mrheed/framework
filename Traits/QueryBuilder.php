@@ -1,6 +1,6 @@
 <?php
 
-namespace Ez\Traits;
+namespace Gi_BaseFramework\Traits;
 
 trait QueryBuilder {
 

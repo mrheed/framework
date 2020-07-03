@@ -19,9 +19,9 @@ function studly_case($str, array $noStrip = []){
 }
 
 function generate_token(){
-    $str = str_shuffle('
-        1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM
-    ');
+    $str = str_shuffle(
+        '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'
+    );
 
     return substr($str, rand(1, 58), 5);
 }

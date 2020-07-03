@@ -38,15 +38,15 @@ if (!file_exists(base_dir('.gitignore'))) {
 		stub(__DIR__ . '/stubs/gitignore.stub'));
 }
 
-Ez\Env::file(__DIR__ . '/../.env');
-Ez\Config::load(__DIR__ . '/../config');
+Gi_BaseFramework\Env::file(__DIR__ . '/../.env');
+Gi_BaseFramework\Config::load(__DIR__ . '/../config');
 
-Ez\ErrorHandler::register();
+Gi_BaseFramework\ErrorHandler::register();
 
 date_default_timezone_set(config('app.timezone'));
 
-$url = Ez\Request::url();
+$url = Gi_BaseFramework\Request::url();
 
 if ('/' == $url) $url = config('app.indexurl');
 
-(new Ez\Router)->handle($url);
+(new Gi_BaseFramework\Router)->handle($url);

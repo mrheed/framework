@@ -1,18 +1,23 @@
 <?php
 
-namespace Ez;
+namespace Gi_BaseFramework;
+
+use Gi_BaseFramework\Traits\ViewCompiler;
 
 class View {
 
-	private static $path = null;
-	private static $name = null;
-	private static $data = [];
+	use ViewCompiler;
+
+	private
+		$path = null,
+		$name = null,
+		$data = [];
 
 	public function path($path){
 
 		if (!is_null($path)) {
 
-			static::$path = $path;
+			$this->path = $path;
 		}
 
 		return $this;
@@ -22,7 +27,7 @@ class View {
 
 		if (!is_null($name)) {
 
-			static::$name = $name;
+			$this->name = $name;
 		}
 
 		return $this;
@@ -30,36 +35,29 @@ class View {
 
 	public function data($key = null, $val = null){
 		
+		if (is_null($key) and is_null($val)) {
+			return new Collection($this->data);
+		}
+
 		if (is_array($key)) {
 
 			foreach ($key as $sub_key => $sub_val){
 
-				static::$data[$sub_key] = $sub_val;
+				$this->data[$sub_key] = $sub_val;
 			}
 
 		} elseif(!is_null($val)) {
 
-			static::$data[$key] = $val;
+			$this->data[$key] = $val;
 		}
 
 		return $this;
 	}
 
-	public function getData(){
-
-		return new Collection(static::$data);
-	}
-
 	public function render(){
 
-		$file = static::$path . '/' . static::$name . '.php';
-
-		dd(fileatime($file));
-		exit();
-
-		return new Collection([
-			'data' => static::$data,
-			'file' => $file
-		]);
+		extract($this->data);
+		
+		include $this->getCompiled($this->name);
 	}
 }
