@@ -1,18 +1,18 @@
 <?php
 
-use Gi_BaseFramework\Request;
-use Gi_BaseFramework\Validation;
-use Gi_BaseFramework\Session;
-use Gi_BaseFramework\Database;
+use Gi\Request;
+use Gi\Validation;
+use Gi\Session;
+use Gi\Database;
 
 function env($key, $default = null){
 
-	return Gi_BaseFramework\Env::get($key, $default);
+	return Gi\Env::get($key, $default);
 }
 
 function config($config_name = null){
 
-	return Gi_BaseFramework\Config::get($config_name);
+	return Gi\Config::get($config_name);
 }
 
 function session($session_name = false, $val = false){
@@ -172,7 +172,7 @@ function stub($file, $data = []){
 
 function view($name, $data = []){
 
-	return (new Gi_BaseFramework\View)->name($name)->data($data);
+	return (new Gi\View)->name($name)->data($data);
 }
 
 function request(){

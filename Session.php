@@ -1,6 +1,6 @@
 <?php
 
-namespace Gi_BaseFramework;
+namespace Gi;
 
 class Session {
 

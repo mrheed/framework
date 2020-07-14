@@ -1,8 +1,8 @@
 <?php
 
-namespace Gi_BaseFramework;
+namespace Gi;
 
-use Gi_BaseFramework\Traits\ViewCompiler;
+use Gi\Traits\ViewCompiler;
 
 class View {
 

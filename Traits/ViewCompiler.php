@@ -1,8 +1,8 @@
 <?php
 
-namespace Gi_BaseFramework\Traits;
+namespace Gi\Traits;
 
-use Gi_BaseFramework\Collection;
+use Gi\Collection;
 
 trait ViewCompiler {
 
@@ -94,6 +94,10 @@ trait ViewCompiler {
                 return '<?php $this->' . "$match[1]() ?>";
                 break;
 
+            case 'include':
+                $include = str_replace(['\'', '"'], null, $match[4]);
+                return '<?php include $this->getCompiled(\'' . $include . '\') ?>';
+
             default:
                 break;
         }
@@ -136,7 +140,7 @@ trait ViewCompiler {
             
             if (!file_exists($path)) {
 
-                mkdir($path, 0777, true);
+                mkdir($path, PERMISSION, true);
             }
             
             $new_map = [

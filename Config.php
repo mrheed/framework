@@ -1,6 +1,6 @@
 <?php
 
-namespace Gi_BaseFramework;
+namespace Gi;
 
 class Config {
 
@@ -26,7 +26,7 @@ class Config {
 
 		} else {
 
-			mkdir($dir, 0777, true);
+			mkdir($dir, PERMISSION, true);
 
 			file_put_contents($dir . '/app.php',
 				stub(__DIR__ . '/stubs/app_config.stub'));

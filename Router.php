@@ -1,6 +1,6 @@
 <?php
 
-namespace Gi_BaseFramework;
+namespace Gi;
 
 use ReflectionMethod;
 use Exception;
@@ -87,7 +87,7 @@ class Router {
 
 			if (!file_exists($file)) {
 
-				mkdir($path, 0777, true);
+				mkdir($path, PERMISSION, true);
 
 				file_put_contents($file, stub(
 					__DIR__ . '/stubs/controller.stub', [
@@ -97,17 +97,17 @@ class Router {
 					]
 				));
 
-				mkdir("$path/view", 0777, true);
+				mkdir("$path/view", PERMISSION, true);
 				file_put_contents("$path/view/$page_name.php",
 					stub(__DIR__ . '/stubs/view.stub'));
 				file_put_contents("$path/view/layout.php",
 					stub(__DIR__ . '/stubs/view_layout.stub'));
 				
-				mkdir("$path/css", 0777, true);
+				mkdir("$path/css", PERMISSION, true);
 				file_put_contents("$path/css/$page_name.css",
 					stub(__DIR__ . '/stubs/css.stub'));
 				
-				mkdir("$path/js", 0777, true);
+				mkdir("$path/js", PERMISSION, true);
 				file_put_contents("$path/js/$page_name.js",
 					stub(__DIR__ . '/stubs/js.stub'));
 			}
@@ -129,7 +129,7 @@ class Router {
 
 					if ($is_api) {
 						
-						$result = $result->getData()->toArray();
+						$result = $result->data()->toArray();
 
 					} else {
 

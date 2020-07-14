@@ -1,8 +1,8 @@
 <?php
 
-namespace Gi_BaseFramework\Drivers;
+namespace Gi\Drivers;
 
-use Gi_BaseFramework\Contracts\Database;
+use Gi\Contracts\Database;
 
 class Postgre implements Database
 {

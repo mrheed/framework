@@ -1,9 +1,9 @@
 <?php
 
-namespace Gi_BaseFramework;
+namespace Gi;
 
 use Exception;
-use Gi_BaseFramework\Traits\QueryBuilder;
+use Gi\Traits\QueryBuilder;
 
 class Database {
 
@@ -29,7 +29,7 @@ class Database {
             );
         }
 
-        $driver = '\\Gi_BaseFramework\\Drivers\\' . ucfirst(strtolower($db['driver']));
+        $driver = '\\Gi\\Drivers\\' . ucfirst(strtolower($db['driver']));
         
         static::$driver = new $driver;
 
