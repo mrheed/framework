@@ -5,6 +5,6 @@ return [
 	'key' => env('app_key', time()),
 	'debug' => true,
 	'timezone' => 'Asia/Jakarta',
-	'indexurl' => 'app/home/dashboard/index',
+	'indexurl' => 'app/home/index',
 	'tmppath' => base_dir('tmp')
 ];

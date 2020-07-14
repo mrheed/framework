@@ -68,7 +68,11 @@ class Router {
 
 		$class_name = studly_case(
 			empty($arr_url) ? $page_name : array_pop($arr_url)
-		) . 'Controller';
+		);
+
+		if (true == OFFOC) array_push($arr_url, $class_name);
+
+		$class_name .= 'Controller';
 
 		$namespace = '\\' . implode('\\',
 			array_map(function($val){
