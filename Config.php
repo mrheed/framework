@@ -18,9 +18,9 @@ class Config {
 				
 				if(is_file($config_file)){
 					
-					$config_name = str_replace('.php', null, $file_name);
-					$config_value = require $config_file;
-					self::set($config_name, $config_value);
+					$key = str_replace('.php', null, $file_name);
+					$value = require $config_file;
+					self::set($key, $value);
 				}	
 			}
 
@@ -38,24 +38,34 @@ class Config {
 		}
 	}
 
-	public static function set($config_name, $config_value){
+	public static function set($key, $value = null){
 
-		static::$config[$config_name] = $config_value;
+		if (is_array($key)) {
+
+			foreach ($key as $subkey => $subvalue) {
+
+				self::set($subkey, $subvalue);
+			}
+
+		} else {
+
+			static::$config[$key] = $value;
+		}
 	}
 
-	public static function get($config_name = null)
-	{
+	public static function get($key = null){
 
 		$config = static::$config;
 		
-		if ($config_name){
+		if (!is_null($key)){
 
-			$keys = explode('.', $config_name);
+			$keys = explode('.', $key);
 			foreach ($keys as $key){
 			
 				if (array_key_exists($key, $config)){
 			
 					$config = $config[$key];
+
 				} else {
 			
 					return null;

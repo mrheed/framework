@@ -4,47 +4,49 @@ namespace Gi;
 
 class Session {
 
-	private static function start()
-	{
+	private static function key(){
+
+		return config('app.name') . config('app.key');
+	}
+
+	private static function start(){
 
 		if (!session_id()){
 			session_start();
 		}
 
-		if (!isset($_SESSION[config('app.key')])){
+		if (!isset($_SESSION[self::key()])){
 
-			$_SESSION[config('app.key')] = [];
+			$_SESSION[self::key()] = [];
 		}
 	}
 
-	public static function set($session_name, $value = false)
-	{
+	public static function set($key, $value = null){
 
 		self::start();
 
-		if (is_array($session_name)){
+		if (is_array($key)){
 			
-			foreach ($session_name as $key => $val){
+			foreach ($key as $subkey => $val){
 
-				self::set($key, $val);
+				self::set($subkey, $val);
 			}
 
 		} else {
 
-			$_SESSION[config('app.key')][$session_name] = $value;
+			$_SESSION[self::key()][$key] = $value;
 		}
 	}
 
-	public static function get($session_name = false)
-	{
+	public static function get($key = null){
 
 		self::start();
-		
-		$session = $_SESSION[config('app.key')];
 
-		if ($session_name){
+		$session = $_SESSION[self::key()];
 
-			$keys = explode('.', $session_name);
+		if (!is_null($key)){
+
+			$keys = explode('.', $key);
 
 			foreach ($keys as $key){
 			
@@ -62,11 +64,10 @@ class Session {
 		return $session;
 	}
 
-	public static function destroy()
-	{
+	public static function destroy(){
 
 		self::start();
 		
-		unset($_SESSION[config('app.key')]);
+		unset($_SESSION[self::key()]);
 	}
 }

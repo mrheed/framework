@@ -4,31 +4,34 @@ use Gi\Request;
 use Gi\Validation;
 use Gi\Session;
 use Gi\Database;
+use Gi\Config;
 
 function env($key, $default = null){
 
 	return Gi\Env::get($key, $default);
 }
 
-function config($config_name = null){
+function config($key = null, $value = null){
 
-	return Gi\Config::get($config_name);
-}
+	if (is_null($value)){
 
-function session($session_name = false, $val = false){
-
-	if (false == $session_name){
-
-
-		return Session::get();
-
-	} else if (false == $val){
-
-		return Session::get($session_name);
+		return Config::get($key);
 
 	} else {
 
-		Session::set($session_name, $val);
+		Config::set($key, $value);
+	}
+}
+
+function session($key = null, $value = null){
+	
+	if (is_null($value)){
+
+		return Session::get($key);
+
+	} else {
+
+		Session::set($key, $value);
 	}
 }
 

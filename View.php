@@ -35,7 +35,7 @@ class View {
 
 	public function data($key = null, $val = null){
 		
-		if (is_null($key) and is_null($val)) {
+		if (is_null($key)) {
 			return new Collection($this->data);
 		}
 

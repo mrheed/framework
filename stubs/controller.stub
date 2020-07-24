@@ -4,7 +4,7 @@ namespace {namespace};
 
 use Gi\Controller;
 
-class {class_name} extends Controller{
+class {class_name} extends Controller {
 
 	public function {method_name}(){
 

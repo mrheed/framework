@@ -2,8 +2,8 @@
 
 namespace Gi\Contracts;
 
-interface Database
-{
+interface Database {
+
 	public function connect($host, $database, $username, $password);
 	public function close($db_handler);
 	public function query($db_hanlder, $query);

@@ -127,7 +127,11 @@ class Router {
 				
 				$args = $this->getdependency($controller, $method);
 				
+				if (method_exists($controller, 'before')) $controller->before();
+
 				$result = call_user_func_array([$controller, $method], $args);
+
+				if (method_exists($controller, 'after')) $controller->after();
 
 				if ($result instanceof View) {
 

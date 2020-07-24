@@ -24,9 +24,10 @@ class ErrorHandler{
     	];
 
 	public static function display($type, $message, $file, $line){
-
-
-		ob_clean();
+		
+		// if (!empty(ob_get_status())) {
+			// ob_clean();
+		// }
 
 		write_log(
 			client_ip() . " | $type | $message | $file | $line", 'error.log'

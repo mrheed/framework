@@ -2,6 +2,8 @@
 
 namespace Gi\Traits;
 
+use Gi\Collection;
+
 trait QueryBuilder {
 
     private
@@ -15,27 +17,24 @@ trait QueryBuilder {
         $start = 0,
         $length = 0;
 
-    public function __set($coloum, $value)
-    {
+    public function __set($coloum, $value){
 
     	$this->coloum[$coloum] = $value;
     }
 
-    private function tableName()
-    {
+    private function tableName(){
 
         return $this->table != false ? $this->table : get_called_class();
     }
 
-    public function table($name)
-    {
+    public function table($name){
 
         $this->table = $name;
         return $this;
     }
 
-    public function arg(array $args = [])
-    {
+    public function arg(array $args = []){
+
         $args = implode("', '", self::escape($args));
 
         $this->table .= "('{$args}')";
@@ -43,8 +42,8 @@ trait QueryBuilder {
         return $this;
     }
 
-    public function select()
-    {
+    public function select(){
+
         $coloum = func_get_args();
         $coloum = empty($coloum) ? '*' : implode(', ', $coloum);
 
@@ -55,21 +54,20 @@ trait QueryBuilder {
         return $this;
     }
 
-    public function start($start)
-    {
+    public function start($start){
+
         $this->start = $start;
         return $this;
     }
     
-    public function length($length)
-    {
+    public function length($length){
+
         $this->length = $length;
         return $this;
     }
 
+    public function count(){
 
-    public function count()
-    {
         $coloum = func_get_args();
         $coloum = empty($coloum) ? '*' : implode(', ', $coloum);
 
@@ -80,8 +78,8 @@ trait QueryBuilder {
         return $this;
     }
 
-    public function orderBy()
-    {
+    public function orderBy(){
+
         $coloum = func_get_args();
 
         $this->obsql = ' order by ' . implode(', ', $coloum);
@@ -89,23 +87,19 @@ trait QueryBuilder {
         return $this;
     }
 
-    public function asc()
-    {
+    public function asc(){
 
         $this->obsql .= ' asc';
         return $this;
-        
     }
 
-    public function desc()
-    {
+    public function desc(){
 
         $this->obsql .= ' desc';
         return $this;
     }
 
-    public function insert(array $data = [])
-    {
+    public function insert(array $data = []){
 
     	$data = empty($data) ? $this->coloum : $data;
 
@@ -127,8 +121,8 @@ trait QueryBuilder {
 		return $this;
     }
 
-    public function update(array $data = [])
-    {
+    public function update(array $data = []){
+
         $data = empty($data) ? $this->coloum : $data;
 
         $arr_data = [];
@@ -150,8 +144,7 @@ trait QueryBuilder {
         return $this;
     }
 
-    public function orWhere($coloums, $condition = false, $value = false)
-    {
+    public function orWhere($coloums, $condition = false, $value = false){
 
         return $this->where($coloums, $condition, $value, 'or');
     }
@@ -161,7 +154,7 @@ trait QueryBuilder {
         $condition = false,
         $value = false,
         $glue = 'and'
-    ) {
+    ){
 
         if (is_callable($coloums)) {
 
@@ -231,8 +224,7 @@ trait QueryBuilder {
         return $this;
     }
 
-    public function delete()
-    {
+    public function delete(){
         
         $table = $this->tableName();
 
@@ -241,8 +233,7 @@ trait QueryBuilder {
         return $this;
     }
 
-    public function getSql()
-    {
+    public function getSql(){
 
         if (0 != $this->length) {
 
@@ -255,8 +246,7 @@ trait QueryBuilder {
     	return $this->sql . $this->wsql . $this->obsql;
     }
 
-    public function run($sql = false)
-    {
+    public function run($sql = false){
 
         if (false == $sql) {
 
@@ -266,8 +256,8 @@ trait QueryBuilder {
     	return $this->query($sql);
     }
 
-    public function raw($sql, $prepare_var = false, $callback = false)
-    {
+    public function raw($sql, $prepare_var = false, $callback = false){
+
         if (is_array($prepare_var)) {
 
             foreach ($prepare_var as $key => $val) {
@@ -279,7 +269,6 @@ trait QueryBuilder {
             }
         }   
 
-        // die($sql);
         $query = $this->query($sql);
 
         if (is_callable($prepare_var)) {
@@ -301,11 +290,10 @@ trait QueryBuilder {
             $data[] = $callback($item);
         }
 
-        return $data;
+        return new Collection($data);
     }
 
-    public function returning($coloum)
-    {
+    public function returning($coloum){
 
         $this->sql .= ' returning ' . $this->escape($coloum);
 
@@ -319,10 +307,9 @@ trait QueryBuilder {
         return false;
     }
 
-    public function get($callback = false)
-    {
-    	$query = $this->run();
+    public function get($callback = false){
 
+    	$query = $this->run();
 
         $data = [];
 
@@ -333,7 +320,6 @@ trait QueryBuilder {
                 return $item;
             };
         }
-
     	
     	while ($item = $this->assoc($query)){
 
@@ -341,17 +327,21 @@ trait QueryBuilder {
             $data[] = $callback($item);
         }
 
-    	return $data;
+    	return new Collection($data);
     }
 
-    public function one()
-    {
+    public function one(){
 
-        return $this->assoc($this->run());
+        $data = $this->assoc($this->run());
+
+        if ($data) {
+            return new Collection($data);
+        }
+
+        return new Collection;
     }
 
-    public function all($callback = false)
-    {
+    public function all($callback = false){
 
     	return $this->select()->get($callback);
     }
