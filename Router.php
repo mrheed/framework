@@ -162,11 +162,16 @@ class Router {
 
 		$result = $this->prepare($url);
 		
-		if ($result instanceof View) {
+		if($result instanceof View) {
 
 			$result->render();
 
-		} elseif (is_array($result)){
+		} elseif($result instanceof Collection){
+
+			header('content-type:application/json');
+			echo json_encode($result->toArray());
+
+		} elseif(is_array($result)){
 
 			header('content-type:application/json');
 			echo json_encode($result);

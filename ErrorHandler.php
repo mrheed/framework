@@ -69,7 +69,6 @@ class ErrorHandler{
 
 		} else {
 
-
 			$html = "
 				<!DOCTYPE HTML>
 				<html>

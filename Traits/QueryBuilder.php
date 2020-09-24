@@ -237,9 +237,12 @@ trait QueryBuilder {
 
         if (0 != $this->length) {
 
-            $this->sql = str_replace('select ',
+            /*$this->sql = str_replace('select ',
                 "select first {$this->length} skip {$this->start} ",
-                $this->sql);
+                $this->sql);*/
+
+            return $this->sql . $this->wsql . $this->obsql . 
+                " offset {$this->start} limit {$this->length}";
 
         }
 
@@ -303,8 +306,8 @@ trait QueryBuilder {
 
             return $result[$coloum];
         }
-        
-        return false;
+
+        return null;
     }
 
     public function get($callback = false){
