@@ -5,9 +5,9 @@
 		},
 		"autoload": {
           "files": [
-              "helpers/app.php",
-              "helpers/array.php",
-              "helpers/string.php"
+              "src/helpers/app.php",
+              "src/helpers/array.php",
+              "src/helpers/string.php"
           ],
           "psr-4": {
               "Gi\\": "src/"
