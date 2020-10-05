@@ -90,7 +90,9 @@ class Router {
 
 			if (!file_exists($file)) {
 
-				mkdir($path, PERMISSION, true);
+				if (!is_dir($path)) {
+					mkdir($path, PERMISSION, true);
+				}
 
 				file_put_contents($file, stub(
 					__DIR__ . '/stubs/controller.stub', [

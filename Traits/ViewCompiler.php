@@ -144,7 +144,6 @@ trait ViewCompiler {
         if(!file_exists("$path/map.log")) {
             
             if (!file_exists($path)) {
-
                 mkdir($path, PERMISSION, true);
             }
             
