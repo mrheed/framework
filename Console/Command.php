@@ -4,17 +4,16 @@ namespace Gi\Console;
 
 use Symfony\Component\Console\Application;
 
-class Command
+class Command extends Application
 {
-    protected $application;
-
     /**
      * Command constructor.
-     * @param Application $application
+     * @param string|string $name
+     * @param string|string $version
      */
-    public function __construct(Application $application)
+    public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN')
     {
-        $this->application = $application;
+        parent::__construct($name, $version);
     }
 
     /**
@@ -22,10 +21,10 @@ class Command
      *
      * @throws \Exception
      */
-    public function register()
+    public function registerCommand()
     {
-        $this->application->add(new MakeCommand('make:controller'));
-        $this->application->run();
+        $this->add(new MakeCommand('make:controller'));
+        $this->run();
     }
 
     // nanti ditambah apa terserah
