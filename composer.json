@@ -2,5 +2,19 @@
     "name": "simppd/php-framework",
 		"require": {
 			"symfony/console": "^5.1"
-		}
+		},
+		"autoload": {
+          "classmap": [
+              "src/Illuminate/Queue/IlluminateQueueClosure.php"
+          ],
+          "files": [
+              "helpers/app.php",
+              "helpers/array.php",
+              "helpers/string.php"
+          ],
+          "psr-4": {
+              "Gi\\": "src/"
+          }
+      },
+			"minimum-stability": "dev"
 }
