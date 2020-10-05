@@ -1,6 +1,6 @@
 {
     "name": "simppd/php-framework",
 		"require": {
-			"symfony/console": "5.1.7"
+			"symfony/console": "^5.1"
 		}
 }
