@@ -160,7 +160,7 @@ function client_device(){
 
 function base_dir($foo = null){
 
-	return realpath(__DIR__ . '/../../') . "/$foo";
+    return realpath('').'/'.($foo ? $foo : '');
 }
 
 function stub($file, $data = []){

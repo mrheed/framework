@@ -73,6 +73,16 @@ class Router {
 
 		$class_name .= 'Controller';
 
+        $dir = implode('/',
+                array_map(function($val){
+
+                    return  studly_case(ucfirst(strtolower($val)));
+
+                }, $arr_url)
+            ).'/'.$class_name.'.php';
+
+        require base_dir($dir);
+
 		$namespace = '\\' . implode('\\',
 			array_map(function($val){
 
