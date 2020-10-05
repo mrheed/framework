@@ -77,12 +77,12 @@ trait ViewCompiler {
 
             case 'push':
             case 'section':
-                return '<?php $this->' . "$match[1]$match[3] ?>";
+                return '<?php $this->'."$match[1]$match[3] ?>";
                 break;
 
             case 'stack':
             case 'yield':
-                return '<?= $this->' . "$match[1]$match[3] ?>";
+                return '<?= $this->'."$match[1]$match[3] ?>";
                 break;
 
             case 'extends':
@@ -91,12 +91,15 @@ trait ViewCompiler {
 
             case 'endpush':
             case 'endsection':
-                return '<?php $this->' . "$match[1]() ?>";
+                return '<?php $this->'."$match[1]() ?>";
                 break;
 
             case 'include':
                 $include = str_replace(['\'', '"'], null, $match[4]);
-                return '<?php include $this->getCompiled(\'' . $include . '\') ?>';
+                
+                $file = $this->path.'/'.$include.'.php';
+
+                return '<?php include $this->getCompiled(\''.$file.'\') ?>';
 
             default:
                 break;
@@ -124,8 +127,10 @@ trait ViewCompiler {
         $compiled = strtr($this->compileStatements($string), $replace);
 
         if (!is_null($this->extends)) {
-            $compiled .= '<?php include $this->getCompiled(\'' .
-                $this->extends . '\') ?>';
+
+            $extends_file = $this->path.'/'.$this->extends.'.php';
+
+            $compiled .= '<?php include $this->getCompiled(\''.$extends_file.'\') ?>';
         }
 
         return $compiled;
@@ -133,7 +138,7 @@ trait ViewCompiler {
 
     private function map($file, $compiled = null, $time = null){
 
-        $path = config('app.tmppath') . '/view';
+        $path = config('app.tmppath').'/view';
 
         // generate map file for the first time
         if(!file_exists("$path/map.log")) {
@@ -167,7 +172,7 @@ trait ViewCompiler {
             'time' => $time
         ];
 
-        file_put_contents($path . '/map.log', serialize($map));
+        file_put_contents($path.'/map.log', serialize($map));
 
         return new Collection($map[$file]);
     }
@@ -176,18 +181,18 @@ trait ViewCompiler {
 
         $string = $this->compile(file_get_contents($file));
         $random = generate_token();
-        $compiled = config('app.tmppath') . "/view/$random.php";
+        $compiled = config('app.tmppath')."/view/$random.php";
 
         file_put_contents($compiled, $string);
 
         return $this->map($file, $compiled, $time);
     }
 
-    public function getCompiled($name){
+    public function getCompiled($file){
         
+        $this->path = dirname($file);
+
         $this->extends = null;
-        
-        $file = "$this->path/$name.php";
         
         $updated = fileatime($file);
         $map = $this->map($file);

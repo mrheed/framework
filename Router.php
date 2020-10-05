@@ -61,7 +61,6 @@ class Router {
 		if (Request::isAjax()) {
 
 			$is_api = true;
-			$http_method =  'ajax_'. $http_method;
 		}
 
 		$method = camel_case($http_method . '_' . $page_name);
@@ -127,11 +126,18 @@ class Router {
 				
 				$args = $this->getdependency($controller, $method);
 				
-				if (method_exists($controller, 'before')) $controller->before();
+				if (method_exists($controller, 'before')){
+
+					list($class, $method, $args) = $controller->before($class, $method, $args);
+					$controller = new $class;
+				}
 
 				$result = call_user_func_array([$controller, $method], $args);
 
-				if (method_exists($controller, 'after')) $controller->after();
+				if (method_exists($controller, 'after')) {
+
+					$result = $controller->after($class, $method, $args, $result);
+				}
 
 				if ($result instanceof View) {
 

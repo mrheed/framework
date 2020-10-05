@@ -75,7 +75,8 @@ function dd(){
 
 	foreach ($args as $arg){
 		echo "		<pre>";
-		var_dump($arg);
+		// var_dump($arg);
+		print_r($arg);
 		echo "		</pre>";
 	}
 
@@ -193,7 +194,7 @@ function get($name = null){
 	return Request::query($name);
 }
 
-function post_rules($rules){
+function post_rules($rules = []){
 
 	$data = post()->toArray();
 	return (new Validation)->rules($rules)->data($data)->validate();

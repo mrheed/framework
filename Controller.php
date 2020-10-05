@@ -4,9 +4,13 @@ namespace Gi;
 
 class Controller {
 
-	public function before(){
+	public function before($class, $method, $args){
+
+		return [$class, $method, $args];
 	}
 
-	public function after(){
+	public function after($class, $method, $args, $result){
+
+		return $result;
 	}
 }

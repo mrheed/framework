@@ -15,20 +15,14 @@ class View {
 
 	public function path($path){
 
-		if (!is_null($path)) {
-
-			$this->path = $path;
-		}
+		$this->path = $path;
 
 		return $this;
 	}
 
 	public function name($name = null){
 
-		if (!is_null($name)) {
-
-			$this->name = $name;
-		}
+		$this->name = $name;
 
 		return $this;
 	}
@@ -58,6 +52,8 @@ class View {
 
 		extract($this->data);
 		
-		include $this->getCompiled($this->name);
+		$file = "$this->path/$this->name.php";
+
+		include $this->getCompiled($file);
 	}
 }
