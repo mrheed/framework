@@ -106,7 +106,7 @@ class MakeCommand extends SymfonyCommand
     protected function createStub(array $stubs)
     {
         foreach ($stubs as $key => $val) {
-            $content = stub(base_dir('Gi/stubs/' . $key . '.stub'), $val['opts']);
+            $content = stub(base_dir('stubs/' . $key . '.stub'), $val['opts']);
             $this->writeStub(array_merge($this->path, $val['path']), $val['name'], $content);
             $this->io->section('File ' . $key . ' dengan nama ' . $val['name'] . ' berhasil dibuat</>');
         }
